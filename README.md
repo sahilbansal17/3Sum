@@ -59,3 +59,59 @@ Finally, you get a pair with sum = target.
 We still need to make sure that we do not get duplicate triplets, and we do not miss one!
 
 ## Algorithm
+Let's take an example to develop the algorithm.
+
+A = [-2, -2, -1, -1, 0, 1, 1, 2, 2]
+
+Let's say we were to consider first -2 as fixed. Now, we need to find pairs with sum = 2 in the remaining array.
+
+i.e. pair with **target = 2** in `A' = [-2, -1, -1, 0, 1, 1, 2, 2]`
+
+To find multiple pairs, we can do the following modification:
+
+Whenever pair sum = target, shift both start and end pointers to right and left respectively.
+So, we will get `(0, 2)` and `(1, 1)` as the required pairs and hence `(-2, 0, 2)` and `(-2, 1, 1)` as the corresponding triplets.
+
+Now, considering the next `-2` in the array, can we simply ignore the left part of the array?
+
+Exactly, because we already found all possible pairs taking elements in the left part as fixed.
+
+So, for the second -2 in the array, the array to look is just to the right of it, i.e. `A'' = [-1, -1, 0, 1, 1, 2, 2]`.
+
+But, now how do we ensure that no duplicate triplets are present in the result?
+
+If we use an additional set to store the results, it will be require additional space, as well as insertion would take `O(log N)`. Can we do it more **efficiently**?
+
+Let's consider another example:
+
+B = [-2, -2, -2, 1, 1, 4, 4]
+
+- So, let's start with the `-2` at index `0`.
+  - Let's find all pairs with sum `2`.
+  - They come out to be `(-2, 4), (-2, 4), (1, 1)`. 
+  - At each step, we shift both the `start` and `end` pointers since sum exactly matches target.
+
+    Could we have avoided the duplicate `(-2, 4)` getting in our way? YES.
+    See that we can simply move the `start` pointer while it matches its old value (-2) and similarly shift the `end` pointer till it matches its old value (4).
+
+- Now, let's come to the `-2` at index `1`.
+    - As per our approach, we will see to its right to get pairs with sum `2`.
+    - But, we have already considered all possible pairs with `sum = 2` for the previous `-2`.
+    - So, we can simply ignore this element for further processing to avoid duplicates.
+
+From this example, we have found out a way to avoid duplicates.
+
+- We can simply move our first element of triplet to the right till it matches the previous triplets' first number. (Outer loop, fixing the first element)
+
+- Inside the inner loop, we can shift the start/end pointers till they refer to the same values.
+
+### Time Complexity
+- First of all, array is sorted incurring `O(n log n)`.
+
+- We are then fixing the first element of the triplet in the outer loop running over all the elements. 
+
+- In the inner loop, we find a pair with given sum using two-pointer approach and avoiding duplicates smartly.
+
+Thus, overall time complexity = `O(n^2)`
+
+### Implementation
